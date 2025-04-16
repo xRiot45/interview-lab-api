@@ -19,4 +19,8 @@ export class RoleService {
         const roleEntity = new RoleEntity({ name });
         return await this.roleRepository.saveData(roleEntity);
     }
+
+    async findAllRoleService(): Promise<RoleResponse[]> {
+        return await this.roleRepository.findAll();
+    }
 }
