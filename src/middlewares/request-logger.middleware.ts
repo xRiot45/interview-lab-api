@@ -10,7 +10,7 @@ export class RequestLoggerMiddleware implements NestMiddleware {
         res.on('finish', () => {
             const statusCode = res.statusCode;
             if ([401, 403, 404, 405, 409].includes(statusCode)) {
-                this.logger.warn(`[${req.method}] ${req.url} - ${statusCode}`);
+                this.logger.error(`[${req.method}] ${req.url} - ${statusCode}`);
             }
         });
 

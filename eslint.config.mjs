@@ -29,11 +29,11 @@ export default tseslint.config(
     },
     {
         rules: {
+            '@typescript-eslint/no-unsafe-call': 'off',
             '@typescript-eslint/restrict-template-expressions': 'off',
             '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/no-floating-promises': 'off',
             '@typescript-eslint/no-unsafe-argument': 'warn',
-            indent: ['error', 4],
             'prettier/prettier': [
                 'error',
                 {
