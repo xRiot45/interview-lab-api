@@ -12,4 +12,5 @@ export interface IRoleRepository {
     }): Promise<[RoleEntity[], number]>;
 
     findById(id: number): Promise<RoleEntity | null>;
+    updateData(id: number, role: RoleEntity): Promise<RoleEntity | null>;
 }

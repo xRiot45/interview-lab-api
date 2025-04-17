@@ -4,6 +4,7 @@ import { Service } from 'src/decorators/service.decorator';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { RoleResponse } from './dto/role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleEntity } from './entities/role.entity';
 import { RoleRepository } from './repositories/role.repository';
 
@@ -73,5 +74,21 @@ export class RoleService {
         }
 
         return role;
+    }
+
+    async updateRoleService(id: number, req: UpdateRoleDto): Promise<RoleResponse | null> {
+        const { name } = req;
+        const role = await this.roleRepository.findById(id);
+        if (!role) {
+            throw new NotFoundException('Role not found');
+        }
+
+        const existingRole = await this.roleRepository.findByName(name);
+        if (existingRole && existingRole.id !== id) {
+            throw new ConflictException('Role already exists');
+        }
+
+        role.name = name;
+        return await this.roleRepository.updateData(id, role);
     }
 }

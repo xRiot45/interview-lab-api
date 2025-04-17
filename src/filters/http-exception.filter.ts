@@ -29,7 +29,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             status: false,
             message,
             timestamp: new Date().toISOString(),
-            path: `${process.env.APP_URL}${request.url}`,
+            path: request.url,
         });
     }
 }

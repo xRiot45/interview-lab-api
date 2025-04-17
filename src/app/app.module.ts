@@ -9,6 +9,6 @@ import { RoleModule } from './role/role.module';
 })
 export class AppModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(RequestLoggerMiddleware).forRoutes('*');
+        consumer.apply(RequestLoggerMiddleware).forRoutes('/');
     }
 }
