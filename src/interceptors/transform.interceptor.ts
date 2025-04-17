@@ -14,7 +14,7 @@ export class TransformInterceptor<T = unknown> implements NestInterceptor {
             map(
                 (data): TransformResponse<T> => ({
                     status: 'success',
-                    data,
+                    ...data,
                 }),
             ),
         );

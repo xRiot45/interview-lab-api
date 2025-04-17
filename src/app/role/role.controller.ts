@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Request } from 'express';
+import { PaginationQuery } from 'src/types/pagination';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { RoleResponse } from './dto/role.dto';
 import { RoleService } from './role.service';
@@ -13,7 +15,15 @@ export class RoleController {
     }
 
     @Get()
-    async findAllRoleController(): Promise<RoleResponse[]> {
-        return this.roleService.findAllRoleService();
+    async findAll(@Req() req: Request, @Query() query: PaginationQuery) {
+        const raw = req.query as Record<string, string>;
+        const filter: Record<string, string> = {};
+        Object.keys(raw).forEach((k) => {
+            if (k.startsWith('filter.')) {
+                filter[k.split('.')[1]] = raw[k];
+            }
+        });
+
+        return this.roleService.findAllRoleService({ ...query, filter }, req);
     }
 }
