@@ -13,4 +13,5 @@ export interface IRoleRepository {
 
     findById(id: number): Promise<RoleEntity | null>;
     updateData(id: number, role: RoleEntity): Promise<RoleEntity | null>;
+    deleteData(id: number): Promise<void>;
 }

@@ -62,4 +62,8 @@ export class RoleRepository extends TypeOrmRepository<RoleEntity> implements IRo
         await this.update(id, role);
         return this.findOneBy({ id });
     }
+
+    public async deleteData(id: number): Promise<void> {
+        await this.delete(id);
+    }
 }

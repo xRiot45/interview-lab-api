@@ -91,4 +91,12 @@ export class RoleService {
         role.name = name;
         return await this.roleRepository.updateData(id, role);
     }
+
+    async deleteRoleService(id: number): Promise<void> {
+        const role = await this.roleRepository.findById(id);
+        if (!role) {
+            throw new NotFoundException('Role not found');
+        }
+        return await this.roleRepository.deleteData(id);
+    }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginationQuery } from 'src/types/pagination';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -36,5 +36,10 @@ export class RoleController {
     @Put('/:id')
     async updateRoleController(@Param('id') id: number, @Body() req: UpdateRoleDto) {
         return this.roleService.updateRoleService(id, req);
+    }
+
+    @Delete('/:id')
+    async deleteRoleController(@Param('id') id: number) {
+        return this.roleService.deleteRoleService(id);
     }
 }
