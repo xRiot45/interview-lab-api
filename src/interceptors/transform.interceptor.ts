@@ -3,7 +3,7 @@ import { Observable, map } from 'rxjs';
 import { Interceptor } from 'src/decorators/interceptor.decorator';
 
 interface TransformResponse<T = unknown> {
-    status: string;
+    status: boolean;
     data?: T;
 }
 
@@ -13,8 +13,8 @@ export class TransformInterceptor<T = unknown> implements NestInterceptor {
         return next.handle().pipe(
             map(
                 (data): TransformResponse<T> => ({
-                    status: 'success',
-                    ...data,
+                    status: true,
+                    data,
                 }),
             ),
         );

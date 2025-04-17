@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginationQuery } from 'src/types/pagination';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -15,7 +15,7 @@ export class RoleController {
     }
 
     @Get()
-    async findAll(@Req() req: Request, @Query() query: PaginationQuery) {
+    async findAllRoleController(@Req() req: Request, @Query() query: PaginationQuery) {
         const raw = req.query as Record<string, string>;
         const filter: Record<string, string> = {};
         Object.keys(raw).forEach((k) => {
@@ -25,5 +25,10 @@ export class RoleController {
         });
 
         return this.roleService.findAllRoleService({ ...query, filter }, req);
+    }
+
+    @Get('/:id')
+    async findRoleByIdController(@Param('id') id: number) {
+        return this.roleService.findRoleByIdService(id);
     }
 }

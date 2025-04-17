@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { Service } from 'src/decorators/service.decorator';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
@@ -46,7 +46,7 @@ export class RoleService {
         };
 
         return {
-            data,
+            items: data,
             meta: {
                 itemsPerPage: limit,
                 totalItems: total,
@@ -64,5 +64,14 @@ export class RoleService {
                 last: buildLink(totalPages),
             },
         };
+    }
+
+    async findRoleByIdService(id: number): Promise<RoleResponse> {
+        const role = await this.roleRepository.findById(id);
+        if (!role) {
+            throw new NotFoundException('Role not found');
+        }
+
+        return role;
     }
 }

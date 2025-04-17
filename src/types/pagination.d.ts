@@ -25,7 +25,7 @@ export interface PaginationLinks {
 }
 
 export interface PaginatedResponse<T> {
-    data: T[];
+    items: T[];
     meta: PaginationMeta;
     links: PaginationLinks;
 }

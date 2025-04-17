@@ -1,11 +1,12 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { ArgumentsHost, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Filters } from 'src/decorators/filters.decorator';
 
 interface ExceptionResponse {
     message: string;
 }
 
-@Catch(HttpException)
+@Filters(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
     private readonly logger = new Logger();
 
@@ -24,13 +25,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
             message = exceptionResponse.message;
         }
 
-        this.logger.error(`[${request.method}] ${request.url} - ${message}`, exception.stack);
-
         response.status(status).json({
-            status: 'error',
+            status: false,
             message,
             timestamp: new Date().toISOString(),
-            path: request.url,
+            path: `${process.env.APP_URL}${request.url}`,
         });
     }
 }
