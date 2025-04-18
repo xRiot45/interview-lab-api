@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 import { winstonLogger } from './configs/winston.config';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
@@ -17,6 +18,7 @@ async function bootstrap() {
             transform: true,
         }),
     );
+    app.use(cookieParser());
     app.useGlobalInterceptors(new TransformInterceptor());
     await app.listen(process.env.PORT ?? 3000);
 }

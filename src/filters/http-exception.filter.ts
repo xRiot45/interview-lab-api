@@ -2,27 +2,33 @@ import { ArgumentsHost, ExceptionFilter, HttpException, HttpStatus, Logger } fro
 import { Request, Response } from 'express';
 import { Filters } from 'src/decorators/filters.decorator';
 
-interface ExceptionResponse {
-    message: string;
-}
-
 @Filters(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-    private readonly logger = new Logger();
+    private readonly logger = new Logger(HttpExceptionFilter.name);
 
-    catch(exception: HttpException, host: ArgumentsHost) {
+    catch(exception: unknown, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
 
-        const status = exception.getStatus?.() || HttpStatus.INTERNAL_SERVER_ERROR;
-        const exceptionResponse = exception.getResponse() as ExceptionResponse;
-
+        let status = HttpStatus.INTERNAL_SERVER_ERROR;
         let message = 'Internal server error';
-        if (typeof exceptionResponse === 'string') {
-            message = exceptionResponse;
-        } else if (typeof exceptionResponse === 'object' && exceptionResponse.message) {
-            message = exceptionResponse.message;
+
+        if (exception instanceof HttpException) {
+            status = exception.getStatus();
+            const exceptionResponse = exception.getResponse();
+
+            if (typeof exceptionResponse === 'string') {
+                message = exceptionResponse;
+            } else if (
+                typeof exceptionResponse === 'object' &&
+                exceptionResponse !== null &&
+                'message' in exceptionResponse
+            ) {
+                message = exceptionResponse.message as string;
+            }
+        } else if (exception instanceof Error) {
+            message = exception.message;
         }
 
         response.status(status).json({

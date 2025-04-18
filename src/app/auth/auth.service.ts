@@ -8,6 +8,13 @@ import { UserEntity } from '../users/entities/user.entity';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { LoginDto, LoginResponse, RegisterDto, RegisterResponse } from './dto/auth.dto';
 
+export interface JwtPayload {
+    sub: number;
+    email: string;
+    role: string;
+    tokenType?: 'access' | 'refresh';
+}
+
 @Service()
 export class AuthService {
     constructor(
@@ -48,12 +55,15 @@ export class AuthService {
         }
 
         const payload = { sub: user.id, email: user.email, role: user.role };
-        const accessToken = this.jwtService.sign(payload, {
-            secret: process.env.ACCESS_TOKEN_SECRET,
-        });
+        const accessToken = this.jwtService.sign(
+            { ...payload, tokenType: 'access' },
+            {
+                secret: process.env.ACCESS_TOKEN_SECRET,
+            },
+        );
 
         const refreshToken = this.jwtService.sign(
-            { ...payload, token_type: 'refresh' },
+            { ...payload, tokenType: 'refresh' },
             {
                 secret: process.env.REFRESH_TOKEN_SECRET,
                 expiresIn: 7 * 24 * 60 * 60, // 7 days
@@ -80,5 +90,25 @@ export class AuthService {
 
         const { ...result } = classToPlain(foundUser);
         return result;
+    }
+
+    async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
+        const decodedPayload = await this.jwtService.verifyAsync<JwtPayload>(refreshToken, {
+            secret: process.env.REFRESH_TOKEN_SECRET,
+        });
+
+        if (decodedPayload.tokenType !== 'refresh') {
+            throw new UnauthorizedException('Token is not a refresh token');
+        }
+
+        const { sub, email, role } = decodedPayload;
+        const newAccessToken = await this.jwtService.signAsync(
+            { sub, email, role },
+            {
+                secret: process.env.ACCESS_TOKEN_SECRET,
+            },
+        );
+
+        return { accessToken: newAccessToken };
     }
 }
