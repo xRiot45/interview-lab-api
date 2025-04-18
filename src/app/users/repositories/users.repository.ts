@@ -15,6 +15,16 @@ export class UsersRepository extends TypeOrmRepository<UserEntity> implements IU
     }
 
     public async findByEmail(email: string): Promise<UserEntity | null> {
-        return this.findOneBy({ email });
+        return this.findOne({
+            where: { email },
+            relations: ['role'],
+        });
+    }
+
+    public async findById(id: number): Promise<UserEntity | null> {
+        return this.findOne({
+            where: { id },
+            relations: ['role'],
+        });
     }
 }

@@ -17,7 +17,16 @@ export class RegisterDto {
     readonly password: string;
 }
 
-export class LoginDto {}
+export class LoginDto {
+    @IsString()
+    @IsNotEmpty()
+    @IsEmail()
+    readonly email: string;
+
+    @IsString()
+    @IsNotEmpty()
+    readonly password: string;
+}
 
 export class RegisterResponse {
     id: number;
@@ -31,4 +40,9 @@ export class RegisterResponse {
     googleId: string | null;
     createdAt: Date;
     updatedAt: Date;
+}
+
+export class LoginResponse {
+    accessToken: string;
+    refreshToken: string;
 }

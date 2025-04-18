@@ -1,17 +1,19 @@
 import { classToPlain } from '@nestjs/class-transformer';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Service } from 'src/decorators/service.decorator';
 import { RoleRepository } from '../role/repositories/role.repository';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersRepository } from '../users/repositories/users.repository';
-import { RegisterDto, RegisterResponse } from './dto/auth.dto';
+import { LoginDto, LoginResponse, RegisterDto, RegisterResponse } from './dto/auth.dto';
 
 @Service()
 export class AuthService {
     constructor(
         private readonly usersRepository: UsersRepository,
         private readonly roleRepository: RoleRepository,
+        private readonly jwtService: JwtService,
     ) {}
 
     async register(req: RegisterDto): Promise<RegisterResponse> {
@@ -36,5 +38,47 @@ export class AuthService {
 
         const user = classToPlain(await this.usersRepository.saveData(payload));
         return user as RegisterResponse;
+    }
+
+    async login(req: LoginDto): Promise<LoginResponse> {
+        const { email, password } = req;
+        const user = await this.usersRepository.findByEmail(email);
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            throw new UnauthorizedException('Invalid email or password');
+        }
+
+        const payload = { sub: user.id, email: user.email, role: user.role };
+        const accessToken = this.jwtService.sign(payload, {
+            secret: process.env.ACCESS_TOKEN_SECRET,
+        });
+
+        const refreshToken = this.jwtService.sign(
+            { ...payload, token_type: 'refresh' },
+            {
+                secret: process.env.REFRESH_TOKEN_SECRET,
+                expiresIn: 7 * 24 * 60 * 60, // 7 days
+            },
+        );
+
+        return { accessToken, refreshToken };
+    }
+
+    async validateUser(email: string, password: string) {
+        const user = await this.usersRepository.findByEmail(email);
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            throw new UnauthorizedException('Invalid email or password');
+        }
+
+        return { id: user.id, email: user.email, role: user.role };
+    }
+
+    async getProfile(user: { userId: number }) {
+        const foundUser = await this.usersRepository.findById(user.userId);
+        if (!foundUser) {
+            throw new NotFoundException('User not found');
+        }
+
+        const { ...result } = classToPlain(foundUser);
+        return result;
     }
 }
