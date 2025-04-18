@@ -2,7 +2,7 @@ import { Inject } from '@nestjs/common';
 import { Repository } from 'src/decorators/repository.decorator';
 import { DataSource, Repository as TypeOrmRepository } from 'typeorm';
 import { RoleEntity } from '../entities/role.entity';
-import { IRoleRepository } from './role.repositoy.interface';
+import { IRoleRepository } from './role.repository-interface';
 
 @Repository(RoleEntity)
 export class RoleRepository extends TypeOrmRepository<RoleEntity> implements IRoleRepository {

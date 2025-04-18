@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/app/users/entities/user.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('roles')
 export class RoleEntity {
@@ -18,12 +19,15 @@ export class RoleEntity {
     })
     createdAt: Date;
 
-    @CreateDateColumn({
+    @UpdateDateColumn({
         type: 'timestamp',
         default: () => 'CURRENT_TIMESTAMP(6)',
         onUpdate: 'CURRENT_TIMESTAMP(6)',
     })
     updatedAt: Date;
+
+    @OneToMany(() => UserEntity, (users) => users.role)
+    users: UserEntity[];
 
     constructor(partial: Partial<RoleEntity>) {
         Object.assign(this, partial);
