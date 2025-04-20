@@ -10,4 +10,6 @@ export interface IInterviewCategoriesRepository {
         search: string;
         filter?: { [key: string]: string | number | boolean };
     }): Promise<[InterviewCategoryEntity[], number]>;
+
+    findById(id: number): Promise<InterviewCategoryEntity | null>;
 }

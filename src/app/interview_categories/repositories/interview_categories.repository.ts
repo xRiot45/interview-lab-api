@@ -57,4 +57,8 @@ export class InterviewCategoriesRepository
         queryBuilder.skip((page - 1) * limit).take(limit);
         return await queryBuilder.getManyAndCount();
     }
+
+    public async findById(id: number): Promise<InterviewCategoryEntity | null> {
+        return await this.findOneBy({ id });
+    }
 }

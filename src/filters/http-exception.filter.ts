@@ -31,7 +31,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             message = exception.message;
         }
 
-        response.status(status).json({
+        response.status(status).header('Content-Type', 'application/json').json({
             status: false,
             message,
             timestamp: new Date().toISOString(),

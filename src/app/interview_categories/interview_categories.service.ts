@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Request } from 'express';
 import { Service } from 'src/decorators/service.decorator';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
@@ -64,5 +64,14 @@ export class InterviewCategoriesService {
                 last: buildLink(totalPages),
             },
         };
+    }
+
+    async findById(id: number): Promise<InterviewCategoryResponse> {
+        const interviewCategory = await this.interviewCategoriesRepository.findById(id);
+        if (!interviewCategory) {
+            throw new NotFoundException('Interview Category not found');
+        }
+
+        return interviewCategory;
     }
 }
