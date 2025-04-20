@@ -61,4 +61,15 @@ export class InterviewCategoriesRepository
     public async findById(id: number): Promise<InterviewCategoryEntity | null> {
         return await this.findOneBy({ id });
     }
+
+    public async updateData(
+        id: number,
+        interviewCategory: InterviewCategoryEntity,
+    ): Promise<InterviewCategoryEntity | null> {
+        await this.update(id, interviewCategory);
+        return this.findOneBy({ id });
+    }
+    public async deleteData(id: number): Promise<void> {
+        await this.delete(id);
+    }
 }

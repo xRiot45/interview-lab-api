@@ -4,6 +4,7 @@ import { Service } from 'src/decorators/service.decorator';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateInterviewCategoryDto } from './dto/create-interview_category.dto';
 import { InterviewCategoryResponse } from './dto/interview-category.dto';
+import { UpdateInterviewCategoryDto } from './dto/update-interview_category.dto';
 import { InterviewCategoryEntity } from './entities/interview_category.entity';
 import { InterviewCategoriesRepository } from './repositories/interview_categories.repository';
 
@@ -73,5 +74,22 @@ export class InterviewCategoriesService {
         }
 
         return interviewCategory;
+    }
+
+    async update(id: number, req: UpdateInterviewCategoryDto): Promise<InterviewCategoryResponse | null> {
+        const { name, isPublished } = req;
+        const interviewCategory = await this.interviewCategoriesRepository.findById(id);
+        if (!interviewCategory) {
+            throw new NotFoundException('Interview Category not found');
+        }
+
+        const existingInterviewCategory = await this.interviewCategoriesRepository.findByName(name ?? '');
+        if (existingInterviewCategory && existingInterviewCategory.id !== id) {
+            throw new ConflictException('Interview Category already exists');
+        }
+
+        interviewCategory.name = name ?? interviewCategory.name;
+        interviewCategory.isPublished = isPublished ?? interviewCategory.isPublished;
+        return await this.interviewCategoriesRepository.updateData(id, interviewCategory);
     }
 }

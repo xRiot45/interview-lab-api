@@ -12,4 +12,6 @@ export interface IInterviewCategoriesRepository {
     }): Promise<[InterviewCategoryEntity[], number]>;
 
     findById(id: number): Promise<InterviewCategoryEntity | null>;
+    updateData(id: number, interviewCategory: InterviewCategoryEntity): Promise<InterviewCategoryEntity | null>;
+    deleteData(id: number): Promise<void>;
 }
