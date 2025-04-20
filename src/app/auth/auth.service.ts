@@ -4,17 +4,11 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { Service } from 'src/decorators/service.decorator';
+import { JwtPayload } from 'src/types/auth';
 import { RoleRepository } from '../role/repositories/role.repository';
 import { UserEntity } from '../users/entities/user.entity';
 import { UsersRepository } from '../users/repositories/users.repository';
 import { LoginDto, LoginResponse, RegisterDto, RegisterResponse } from './dto/auth.dto';
-
-export interface JwtPayload {
-    sub: number;
-    email: string;
-    role: string;
-    tokenType?: 'access' | 'refresh';
-}
 
 @Service()
 export class AuthService {
@@ -24,7 +18,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
-    async register(req: RegisterDto): Promise<RegisterResponse> {
+    async registerV1(req: RegisterDto): Promise<RegisterResponse> {
         const { fullName, email, password } = req;
         const emailExisting = await this.usersRepository.findByEmail(email);
         if (emailExisting) {
@@ -48,7 +42,7 @@ export class AuthService {
         return user as RegisterResponse;
     }
 
-    async login(req: LoginDto): Promise<LoginResponse> {
+    async loginV1(req: LoginDto): Promise<LoginResponse> {
         const { email, password } = req;
         const user = await this.usersRepository.findByEmail(email);
         if (!user || !(await bcrypt.compare(password, user.password))) {
@@ -74,7 +68,7 @@ export class AuthService {
         return { accessToken, refreshToken };
     }
 
-    async validateUser(email: string, password: string) {
+    async validateUserV1(email: string, password: string) {
         const user = await this.usersRepository.findByEmail(email);
         if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new UnauthorizedException('Invalid email or password');
@@ -83,7 +77,7 @@ export class AuthService {
         return { id: user.id, email: user.email, role: user.role };
     }
 
-    async getProfile(user: { userId: number }) {
+    async getProfileV1(user: { userId: number }) {
         const foundUser = await this.usersRepository.findById(user.userId);
         if (!foundUser) {
             throw new NotFoundException('User not found');
@@ -93,7 +87,7 @@ export class AuthService {
         return result;
     }
 
-    async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
+    async refreshTokenV1(refreshToken: string): Promise<{ accessToken: string }> {
         const decodedPayload = await this.jwtService.verifyAsync<JwtPayload>(refreshToken, {
             secret: process.env.REFRESH_TOKEN_SECRET,
         });
@@ -113,7 +107,7 @@ export class AuthService {
         return { accessToken: newAccessToken };
     }
 
-    logout(res: Response): void {
+    logoutV1(res: Response): void {
         res.clearCookie('refreshToken', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
