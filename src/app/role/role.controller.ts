@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginationQuery } from 'src/types/pagination';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -6,17 +6,19 @@ import { RoleResponse } from './dto/role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { RoleService } from './role.service';
 
-@Controller('/api/v1/role')
+@Controller('role')
 export class RoleController {
     constructor(private readonly roleService: RoleService) {}
 
     @Post()
-    async createRoleController(@Body() req: CreateRoleDto): Promise<RoleResponse> {
-        return this.roleService.createRoleService(req);
+    @Version('1')
+    async createV1(@Body() req: CreateRoleDto): Promise<RoleResponse> {
+        return this.roleService.createV1(req);
     }
 
     @Get()
-    async findAllRoleController(@Req() req: Request, @Query() query: PaginationQuery) {
+    @Version('1')
+    async findAllV1(@Req() req: Request, @Query() query: PaginationQuery) {
         const raw = req.query as Record<string, string>;
         const filter: Record<string, string> = {};
         Object.keys(raw).forEach((k) => {
@@ -25,21 +27,24 @@ export class RoleController {
             }
         });
 
-        return this.roleService.findAllRoleService({ ...query, filter }, req);
+        return this.roleService.findAllV1({ ...query, filter }, req);
     }
 
     @Get('/:id')
-    async findRoleByIdController(@Param('id') id: number) {
-        return this.roleService.findRoleByIdService(id);
+    @Version('1')
+    async findByIdV1(@Param('id') id: number) {
+        return this.roleService.findByIdV1(id);
     }
 
     @Put('/:id')
-    async updateRoleController(@Param('id') id: number, @Body() req: UpdateRoleDto) {
-        return this.roleService.updateRoleService(id, req);
+    @Version('1')
+    async updateV1(@Param('id') id: number, @Body() req: UpdateRoleDto) {
+        return this.roleService.updateV1(id, req);
     }
 
     @Delete('/:id')
-    async deleteRoleController(@Param('id') id: number) {
-        return this.roleService.deleteRoleService(id);
+    @Version('1')
+    async deleteV1(@Param('id') id: number) {
+        return this.roleService.deleteV1(id);
     }
 }

@@ -12,7 +12,7 @@ import { RoleRepository } from './repositories/role.repository';
 export class RoleService {
     constructor(private readonly roleRepository: RoleRepository) {}
 
-    async createRoleService(req: CreateRoleDto): Promise<RoleResponse> {
+    async createV1(req: CreateRoleDto): Promise<RoleResponse> {
         const { name } = req;
         const existingRole = await this.roleRepository.findByName(name);
         if (existingRole) {
@@ -23,7 +23,7 @@ export class RoleService {
         return await this.roleRepository.saveData(roleEntity);
     }
 
-    async findAllRoleService(query: PaginationQuery, req: Request): Promise<PaginatedResponse<RoleResponse>> {
+    async findAllV1(query: PaginationQuery, req: Request): Promise<PaginatedResponse<RoleResponse>> {
         const page = Number(query?.page) || 1;
         const limit = Number(query?.limit) || 10;
         const sortBy = query?.sortBy?.split(',') || [];
@@ -67,7 +67,7 @@ export class RoleService {
         };
     }
 
-    async findRoleByIdService(id: number): Promise<RoleResponse> {
+    async findByIdV1(id: number): Promise<RoleResponse> {
         const role = await this.roleRepository.findById(id);
         if (!role) {
             throw new NotFoundException('Role not found');
@@ -76,7 +76,7 @@ export class RoleService {
         return role;
     }
 
-    async updateRoleService(id: number, req: UpdateRoleDto): Promise<RoleResponse | null> {
+    async updateV1(id: number, req: UpdateRoleDto): Promise<RoleResponse | null> {
         const { name } = req;
         const role = await this.roleRepository.findById(id);
         if (!role) {
@@ -92,7 +92,7 @@ export class RoleService {
         return await this.roleRepository.updateData(id, role);
     }
 
-    async deleteRoleService(id: number): Promise<void> {
+    async deleteV1(id: number): Promise<void> {
         const role = await this.roleRepository.findById(id);
         if (!role) {
             throw new NotFoundException('Role not found');
