@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { winstonLogger } from './configs/winston.config';
@@ -12,6 +12,7 @@ async function bootstrap() {
         logger: winstonLogger,
     });
 
+    app.setGlobalPrefix('api');
     app.useGlobalFilters(new HttpExceptionFilter());
     app.useGlobalPipes(
         new ValidationPipe({
@@ -20,6 +21,11 @@ async function bootstrap() {
     );
     app.use(cookieParser());
     app.useGlobalInterceptors(new TransformInterceptor());
+    app.enableVersioning({
+        type: VersioningType.URI,
+        defaultVersion: '1',
+    });
+
     await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
