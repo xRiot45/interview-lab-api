@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
@@ -11,7 +11,7 @@ export class AuthController {
 
     @Post('/register')
     async register(@Body() req: RegisterDto): Promise<RegisterResponse> {
-        return this.authService.register(req);
+        return await this.authService.register(req);
     }
 
     @UseGuards(LocalAuthGuard)
@@ -37,6 +37,12 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Get('/profile')
     async getProfile(@Req() req: { user: { userId: number } }) {
-        return this.authService.getProfile(req.user);
+        return await this.authService.getProfile(req.user);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('/logout')
+    logout(@Res({ passthrough: true }) res: Response) {
+        this.authService.logout(res);
     }
 }

@@ -2,6 +2,7 @@ import { classToPlain } from '@nestjs/class-transformer';
 import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Response } from 'express';
 import { Service } from 'src/decorators/service.decorator';
 import { RoleRepository } from '../role/repositories/role.repository';
 import { UserEntity } from '../users/entities/user.entity';
@@ -110,5 +111,15 @@ export class AuthService {
         );
 
         return { accessToken: newAccessToken };
+    }
+
+    logout(res: Response): void {
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+        });
+
+        return;
     }
 }
