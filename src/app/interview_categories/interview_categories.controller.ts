@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateInterviewCategoryDto } from './dto/create-interview_category.dto';
@@ -13,7 +13,7 @@ export class InterviewCategoriesController {
     @Post()
     @Version('1')
     async create(@Body() req: CreateInterviewCategoryDto): Promise<InterviewCategoryResponse> {
-        return await this.interviewCategoriesService.create(req);
+        return await this.interviewCategoriesService.createV1(req);
     }
 
     @Get()
@@ -30,13 +30,13 @@ export class InterviewCategoriesController {
             }
         });
 
-        return this.interviewCategoriesService.findAll({ ...query, filter }, req);
+        return this.interviewCategoriesService.findAllV1({ ...query, filter }, req);
     }
 
     @Get('/:id')
     @Version('1')
     async findById(@Param('id') id: number): Promise<InterviewCategoryResponse> {
-        return await this.interviewCategoriesService.findById(id);
+        return await this.interviewCategoriesService.findByIdV1(id);
     }
 
     @Patch('/:id')
@@ -45,6 +45,12 @@ export class InterviewCategoriesController {
         @Param('id') id: number,
         @Body() req: UpdateInterviewCategoryDto,
     ): Promise<InterviewCategoryResponse | null> {
-        return await this.interviewCategoriesService.update(id, req);
+        return await this.interviewCategoriesService.updateV1(id, req);
+    }
+
+    @Delete('/:id')
+    @Version('1')
+    async delete(@Param('id') id: number): Promise<void> {
+        return await this.interviewCategoriesService.deleteV1(id);
     }
 }

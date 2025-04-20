@@ -12,7 +12,7 @@ import { InterviewCategoriesRepository } from './repositories/interview_categori
 export class InterviewCategoriesService {
     constructor(private readonly interviewCategoriesRepository: InterviewCategoriesRepository) {}
 
-    async create(req: CreateInterviewCategoryDto) {
+    async createV1(req: CreateInterviewCategoryDto) {
         const { name, isPublished } = req;
         const existingInterviewCategory = await this.interviewCategoriesRepository.findByName(name);
         if (existingInterviewCategory) {
@@ -23,7 +23,7 @@ export class InterviewCategoriesService {
         return await this.interviewCategoriesRepository.saveData(interviewCategoryEntity);
     }
 
-    async findAll(query: PaginationQuery, req: Request): Promise<PaginatedResponse<InterviewCategoryResponse>> {
+    async findAllV1(query: PaginationQuery, req: Request): Promise<PaginatedResponse<InterviewCategoryResponse>> {
         const page = Number(query?.page) || 1;
         const limit = Number(query?.limit) || 10;
         const sortBy = query?.sortBy?.split(',') || [];
@@ -67,7 +67,7 @@ export class InterviewCategoriesService {
         };
     }
 
-    async findById(id: number): Promise<InterviewCategoryResponse> {
+    async findByIdV1(id: number): Promise<InterviewCategoryResponse> {
         const interviewCategory = await this.interviewCategoriesRepository.findById(id);
         if (!interviewCategory) {
             throw new NotFoundException('Interview Category not found');
@@ -76,7 +76,7 @@ export class InterviewCategoriesService {
         return interviewCategory;
     }
 
-    async update(id: number, req: UpdateInterviewCategoryDto): Promise<InterviewCategoryResponse | null> {
+    async updateV1(id: number, req: UpdateInterviewCategoryDto): Promise<InterviewCategoryResponse | null> {
         const { name, isPublished } = req;
         const interviewCategory = await this.interviewCategoriesRepository.findById(id);
         if (!interviewCategory) {
@@ -91,5 +91,14 @@ export class InterviewCategoriesService {
         interviewCategory.name = name ?? interviewCategory.name;
         interviewCategory.isPublished = isPublished ?? interviewCategory.isPublished;
         return await this.interviewCategoriesRepository.updateData(id, interviewCategory);
+    }
+
+    async deleteV1(id: number): Promise<void> {
+        const interviewCategory = await this.interviewCategoriesRepository.findById(id);
+        if (!interviewCategory) {
+            throw new NotFoundException('Interview Category not found');
+        }
+
+        return await this.interviewCategoriesRepository.deleteData(id);
     }
 }
