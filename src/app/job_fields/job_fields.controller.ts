@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateJobFieldDto } from './dto/create-job_field.dto';
@@ -42,5 +42,11 @@ export class JobFieldsController {
     @Version('1')
     async updateV1(@Param('id') id: number, @Body() req: CreateJobFieldDto): Promise<JobFieldResponse> {
         return this.jobFieldsService.updateV1(id, req);
+    }
+
+    @Delete('/:id')
+    @Version('1')
+    async deleteV1(@Param('id') id: number): Promise<void> {
+        return this.jobFieldsService.deleteV1(id);
     }
 }

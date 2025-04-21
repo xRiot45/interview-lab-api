@@ -100,4 +100,13 @@ export class JobFieldsService {
         const updatedData = await this.jobFieldsRepository.updateData(id, jobField);
         return plainToInstance(JobFieldResponse, updatedData, { excludeExtraneousValues: true });
     }
+
+    async deleteV1(id: number): Promise<void> {
+        const jobField = await this.jobFieldsRepository.findById(id);
+        if (!jobField) {
+            throw new NotFoundException('Job Field not found');
+        }
+
+        return await this.jobFieldsRepository.deleteData(id);
+    }
 }

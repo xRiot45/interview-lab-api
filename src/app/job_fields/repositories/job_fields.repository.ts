@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { Repository } from 'src/decorators/repository.decorator';
 import { BaseRepository } from 'src/repositories/base.repository';
-import { DataSource, DeleteResult } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { JobFieldEntity } from '../entities/job_field.entity';
 import { IJobFieldsRepository } from './job_fields.repository-interface';
 
@@ -63,7 +63,7 @@ export class JobFieldsRepository extends BaseRepository<JobFieldEntity> implemen
         return await this.findOneBy({ id });
     }
 
-    async deleteData(id: number): Promise<DeleteResult> {
-        return await this.delete(id);
+    async deleteData(id: number): Promise<void> {
+        await this.delete(id);
     }
 }
