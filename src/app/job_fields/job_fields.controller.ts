@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, Version } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateJobFieldDto } from './dto/create-job_field.dto';
@@ -31,5 +31,11 @@ export class JobFieldsController {
         });
 
         return this.jobFieldsService.findAllV1({ ...query, filter }, req);
+    }
+
+    @Get('/:id')
+    @Version('1')
+    async findByIdV1(@Param('id') id: number): Promise<JobFieldEntity> {
+        return this.jobFieldsService.findByIdV1(id);
     }
 }

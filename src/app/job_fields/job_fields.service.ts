@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Request } from 'express';
 import { Service } from 'src/decorators/service.decorator';
@@ -71,5 +71,14 @@ export class JobFieldsService {
                 last: buildLink(totalPages),
             },
         };
+    }
+
+    async findByIdV1(id: number): Promise<JobFieldResponse> {
+        const jobField = await this.jobFieldsRepository.findById(id);
+        if (!jobField) {
+            throw new NotFoundException('Job Field not found');
+        }
+
+        return plainToInstance(JobFieldResponse, jobField, { excludeExtraneousValues: true });
     }
 }

@@ -1,3 +1,4 @@
+import { DeleteResult } from 'typeorm';
 import { JobFieldEntity } from '../entities/job_field.entity';
 
 export interface IJobFieldsRepository {
@@ -10,4 +11,7 @@ export interface IJobFieldsRepository {
         search: string;
         filter?: { [key: string]: string };
     }): Promise<[JobFieldEntity[], number]>;
+    findById(id: number): Promise<JobFieldEntity | null>;
+    updateData(id: number, job_field: JobFieldEntity): Promise<JobFieldEntity | null>;
+    deleteData(id: number): Promise<DeleteResult>;
 }

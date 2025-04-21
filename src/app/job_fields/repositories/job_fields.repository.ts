@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import { Repository } from 'src/decorators/repository.decorator';
 import { BaseRepository } from 'src/repositories/base.repository';
-import { DataSource } from 'typeorm';
+import { DataSource, DeleteResult } from 'typeorm';
 import { JobFieldEntity } from '../entities/job_field.entity';
 import { IJobFieldsRepository } from './job_fields.repository-interface';
 
@@ -18,6 +18,7 @@ export class JobFieldsRepository extends BaseRepository<JobFieldEntity> implemen
     public async findByName(name: string): Promise<JobFieldEntity | null> {
         return await this.findOneBy({ name });
     }
+
     public async findAllWithPaginate(options: {
         page: number;
         limit: number;
@@ -51,5 +52,18 @@ export class JobFieldsRepository extends BaseRepository<JobFieldEntity> implemen
 
         queryBuilder.skip((page - 1) * limit).take(limit);
         return await queryBuilder.getManyAndCount();
+    }
+
+    public async findById(id: number): Promise<JobFieldEntity | null> {
+        return await this.findOneBy({ id });
+    }
+
+    public async updateData(id: number, job_field: JobFieldEntity): Promise<JobFieldEntity | null> {
+        await this.update(id, job_field);
+        return await this.findOneBy({ id });
+    }
+
+    async deleteData(id: number): Promise<DeleteResult> {
+        return await this.delete(id);
     }
 }
