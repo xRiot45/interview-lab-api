@@ -81,4 +81,23 @@ export class JobFieldsService {
 
         return plainToInstance(JobFieldResponse, jobField, { excludeExtraneousValues: true });
     }
+
+    async updateV1(id: number, req: CreateJobFieldDto): Promise<JobFieldResponse> {
+        const { name, isPublished } = req;
+        const jobField = await this.jobFieldsRepository.findById(id);
+        if (!jobField) {
+            throw new NotFoundException('Job Field not found');
+        }
+
+        const existingJobField = await this.jobFieldsRepository.findByName(name);
+        if (existingJobField && existingJobField.id !== id) {
+            throw new ConflictException(`Job field named "${name}" already exists`);
+        }
+
+        jobField.name = name;
+        jobField.isPublished = isPublished;
+
+        const updatedData = await this.jobFieldsRepository.updateData(id, jobField);
+        return plainToInstance(JobFieldResponse, updatedData, { excludeExtraneousValues: true });
+    }
 }

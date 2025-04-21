@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Version } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateJobFieldDto } from './dto/create-job_field.dto';
 import { JobFieldResponse } from './dto/job_field.dto';
-import { JobFieldEntity } from './entities/job_field.entity';
 import { JobFieldsService } from './job_fields.service';
 
 @Controller('job-fields')
@@ -12,7 +11,7 @@ export class JobFieldsController {
 
     @Post()
     @Version('1')
-    async createV1(@Body() req: CreateJobFieldDto): Promise<JobFieldEntity> {
+    async createV1(@Body() req: CreateJobFieldDto): Promise<JobFieldResponse> {
         return this.jobFieldsService.createV1(req);
     }
 
@@ -35,7 +34,13 @@ export class JobFieldsController {
 
     @Get('/:id')
     @Version('1')
-    async findByIdV1(@Param('id') id: number): Promise<JobFieldEntity> {
+    async findByIdV1(@Param('id') id: number): Promise<JobFieldResponse> {
         return this.jobFieldsService.findByIdV1(id);
+    }
+
+    @Patch('/:id')
+    @Version('1')
+    async updateV1(@Param('id') id: number, @Body() req: CreateJobFieldDto): Promise<JobFieldResponse> {
+        return this.jobFieldsService.updateV1(id, req);
     }
 }
