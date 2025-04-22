@@ -5,9 +5,10 @@ import { InterviewCategoriesModule } from './interview_categories/interview_cate
 import { RoleModule } from './role/role.module';
 import { UsersModule } from './users/users.module';
 import { JobFieldsModule } from './job_fields/job_fields.module';
+import { DifficultyLevelsModule } from './difficulty_levels/difficulty_levels.module';
 
 @Module({
-    imports: [RoleModule, UsersModule, AuthModule, InterviewCategoriesModule, JobFieldsModule],
+    imports: [RoleModule, UsersModule, AuthModule, InterviewCategoriesModule, JobFieldsModule, DifficultyLevelsModule],
     controllers: [],
     providers: [],
 })
