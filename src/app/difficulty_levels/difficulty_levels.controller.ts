@@ -1,4 +1,6 @@
-import { Body, Controller, Post, Version } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, Version } from '@nestjs/common';
+import { Request } from 'express';
+import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { DifficultyLevelsService } from './difficulty_levels.service';
 import { CreateDifficultyLevelDto } from './dto/create-difficulty_level.dto';
 import { DifficultyLevelResponse } from './dto/difficulty_level.dto';
@@ -11,5 +13,22 @@ export class DifficultyLevelsController {
     @Version('1')
     async createV1(@Body() req: CreateDifficultyLevelDto): Promise<DifficultyLevelResponse> {
         return await this.difficultyLevelsService.createV1(req);
+    }
+
+    @Get()
+    @Version('1')
+    async findAllV1(
+        @Req() req: Request,
+        @Query() query: PaginationQuery,
+    ): Promise<PaginatedResponse<DifficultyLevelResponse>> {
+        const raw = req.query as Record<string, string>;
+        const filter: Record<string, string> = {};
+        Object.keys(raw).forEach((k) => {
+            if (k.startsWith('filter.')) {
+                filter[k.split('.')[1]] = raw[k];
+            }
+        });
+
+        return this.difficultyLevelsService.findAllV1({ ...query, filter }, req);
     }
 }
