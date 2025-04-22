@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Version } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { DifficultyLevelsService } from './difficulty_levels.service';
 import { CreateDifficultyLevelDto } from './dto/create-difficulty_level.dto';
 import { DifficultyLevelResponse } from './dto/difficulty_level.dto';
+import { UpdateDifficultyLevelDto } from './dto/update-difficulty_level.dto';
 
 @Controller('difficulty-levels')
 export class DifficultyLevelsController {
@@ -36,5 +37,14 @@ export class DifficultyLevelsController {
     @Version('1')
     async findByIdV1(@Param('id') id: number): Promise<DifficultyLevelResponse> {
         return await this.difficultyLevelsService.findByIdV1(id);
+    }
+
+    @Patch('/:id')
+    @Version('1')
+    async updateV1(
+        @Param('id') id: number,
+        @Body() req: UpdateDifficultyLevelDto,
+    ): Promise<DifficultyLevelResponse | null> {
+        return await this.difficultyLevelsService.updateV1(id, req);
     }
 }
