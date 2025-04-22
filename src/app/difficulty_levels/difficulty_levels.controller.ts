@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { DifficultyLevelsService } from './difficulty_levels.service';
@@ -46,5 +46,11 @@ export class DifficultyLevelsController {
         @Body() req: UpdateDifficultyLevelDto,
     ): Promise<DifficultyLevelResponse | null> {
         return await this.difficultyLevelsService.updateV1(id, req);
+    }
+
+    @Delete('/:id')
+    @Version('1')
+    async delete(@Param('id') id: number): Promise<void> {
+        return await this.difficultyLevelsService.deleteV1(id);
     }
 }
