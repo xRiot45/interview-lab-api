@@ -50,7 +50,7 @@ export class DifficultyLevelsController {
 
     @Delete('/:id')
     @Version('1')
-    async delete(@Param('id') id: number): Promise<void> {
+    async deleteV1(@Param('id') id: number): Promise<void> {
         return await this.difficultyLevelsService.deleteV1(id);
     }
 }
