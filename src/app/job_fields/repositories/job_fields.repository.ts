@@ -27,17 +27,17 @@ export class JobFieldsRepository extends BaseRepository<JobFieldEntity> implemen
         filter?: { [key: string]: string | number | boolean };
     }): Promise<[JobFieldEntity[], number]> {
         const { page, limit, sortBy, search, filter } = options;
-        const queryBuilder = this.createQueryBuilder('interview_category');
+        const queryBuilder = this.createQueryBuilder('job_field');
 
         if (search) {
-            queryBuilder.andWhere('interview_category.name LIKE :search', {
+            queryBuilder.andWhere('job_field.name LIKE :search', {
                 search: `%${search}%`,
             });
         }
 
         if (filter && Object.keys(filter).length > 0) {
             Object.keys(filter).forEach((key) => {
-                queryBuilder.andWhere(`interview_category.${key} = :${key}`, { [key]: filter[key] });
+                queryBuilder.andWhere(`job_field.${key} = :${key}`, { [key]: filter[key] });
             });
         }
 
@@ -45,7 +45,7 @@ export class JobFieldsRepository extends BaseRepository<JobFieldEntity> implemen
             sortBy.forEach((sort) => {
                 const [field, order = 'ASC'] = sort.split(':');
                 if (field && order) {
-                    queryBuilder.addOrderBy(`interview_category.${field}`, order.toUpperCase() as 'ASC' | 'DESC');
+                    queryBuilder.addOrderBy(`job_field.${field}`, order.toUpperCase() as 'ASC' | 'DESC');
                 }
             });
         }

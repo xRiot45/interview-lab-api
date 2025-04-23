@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateJobFieldDto } from './dto/create-job_field.dto';
 import { JobFieldResponse } from './dto/job_field.dto';
+import { UpdateJobFieldDto } from './dto/update-job_field.dto';
 import { JobFieldsService } from './job_fields.service';
 
 @Controller('job-fields')
@@ -40,7 +41,7 @@ export class JobFieldsController {
 
     @Patch('/:id')
     @Version('1')
-    async updateV1(@Param('id') id: number, @Body() req: CreateJobFieldDto): Promise<JobFieldResponse> {
+    async updateV1(@Param('id') id: number, @Body() req: UpdateJobFieldDto): Promise<JobFieldResponse | null> {
         return this.jobFieldsService.updateV1(id, req);
     }
 

@@ -5,6 +5,7 @@ import { Service } from 'src/decorators/service.decorator';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateJobFieldDto } from './dto/create-job_field.dto';
 import { JobFieldResponse } from './dto/job_field.dto';
+import { UpdateJobFieldDto } from './dto/update-job_field.dto';
 import { JobFieldEntity } from './entities/job_field.entity';
 import { JobFieldsRepository } from './repositories/job_fields.repository';
 
@@ -82,20 +83,20 @@ export class JobFieldsService {
         return plainToInstance(JobFieldResponse, jobField, { excludeExtraneousValues: true });
     }
 
-    async updateV1(id: number, req: CreateJobFieldDto): Promise<JobFieldResponse> {
+    async updateV1(id: number, req: UpdateJobFieldDto): Promise<JobFieldResponse | null> {
         const { name, isPublished } = req;
         const jobField = await this.jobFieldsRepository.findById(id);
         if (!jobField) {
             throw new NotFoundException('Job Field not found');
         }
 
-        const existingJobField = await this.jobFieldsRepository.findByName(name);
+        const existingJobField = await this.jobFieldsRepository.findByName(name ?? '');
         if (existingJobField && existingJobField.id !== id) {
             throw new ConflictException(`Job field named "${name}" already exists`);
         }
 
-        jobField.name = name;
-        jobField.isPublished = isPublished;
+        jobField.name = name ?? jobField.name;
+        jobField.isPublished = isPublished ?? jobField.isPublished;
 
         const updatedData = await this.jobFieldsRepository.updateData(id, jobField);
         return plainToInstance(JobFieldResponse, updatedData, { excludeExtraneousValues: true });
