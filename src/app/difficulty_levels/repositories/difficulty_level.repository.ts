@@ -30,17 +30,17 @@ export class DifficultyLevelRepository
         filter?: { [key: string]: string | number | boolean };
     }): Promise<[DifficultyLevelEntity[], number]> {
         const { page, limit, sortBy, search, filter } = options;
-        const queryBuilder = this.createQueryBuilder('interview_category');
+        const queryBuilder = this.createQueryBuilder('difficulty_level');
 
         if (search) {
-            queryBuilder.andWhere('interview_category.name LIKE :search', {
+            queryBuilder.andWhere('difficulty_level.name LIKE :search', {
                 search: `%${search}%`,
             });
         }
 
         if (filter && Object.keys(filter).length > 0) {
             Object.keys(filter).forEach((key) => {
-                queryBuilder.andWhere(`interview_category.${key} = :${key}`, { [key]: filter[key] });
+                queryBuilder.andWhere(`difficulty_level.${key} = :${key}`, { [key]: filter[key] });
             });
         }
 
@@ -48,7 +48,7 @@ export class DifficultyLevelRepository
             sortBy.forEach((sort) => {
                 const [field, order = 'ASC'] = sort.split(':');
                 if (field && order) {
-                    queryBuilder.addOrderBy(`interview_category.${field}`, order.toUpperCase() as 'ASC' | 'DESC');
+                    queryBuilder.addOrderBy(`difficulty_level.${field}`, order.toUpperCase() as 'ASC' | 'DESC');
                 }
             });
         }
