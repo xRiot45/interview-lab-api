@@ -9,7 +9,15 @@ import { DifficultyLevelsModule } from './difficulty_levels/difficulty_levels.mo
 import { LanguagesModule } from './languages/languages.module';
 
 @Module({
-    imports: [RoleModule, UsersModule, AuthModule, InterviewCategoriesModule, JobFieldsModule, DifficultyLevelsModule, LanguagesModule],
+    imports: [
+        RoleModule,
+        UsersModule,
+        AuthModule,
+        InterviewCategoriesModule,
+        JobFieldsModule,
+        DifficultyLevelsModule,
+        LanguagesModule,
+    ],
     controllers: [],
     providers: [],
 })
