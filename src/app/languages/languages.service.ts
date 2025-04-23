@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
@@ -70,5 +70,14 @@ export class LanguagesService {
                 last: buildLink(totalPages),
             },
         };
+    }
+
+    async findByIdV1(id: number): Promise<LanguageResponse> {
+        const language = await this.languagesRepository.findById(id);
+        if (!language) {
+            throw new NotFoundException('Language not found');
+        }
+
+        return plainToInstance(LanguageResponse, language, { excludeExtraneousValues: true });
     }
 }
