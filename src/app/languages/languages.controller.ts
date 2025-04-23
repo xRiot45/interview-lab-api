@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Version } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, Version } from '@nestjs/common';
 import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateLanguageDto } from './dto/create-language.dto';
 import { LanguageResponse } from './dto/language.dto';
+import { UpdateLanguageDto } from './dto/update-language.dto';
 import { LanguagesService } from './languages.service';
 
 @Controller('languages')
@@ -36,5 +37,11 @@ export class LanguagesController {
     @Version('1')
     async findByIdV1(@Param('id') id: number): Promise<LanguageResponse> {
         return this.languagesService.findByIdV1(id);
+    }
+
+    @Patch('/:id')
+    @Version('1')
+    async updateV1(@Param('id') id: number, @Body() req: UpdateLanguageDto): Promise<LanguageResponse> {
+        return this.languagesService.updateV1(id, req);
     }
 }

@@ -4,6 +4,7 @@ import { Request } from 'express';
 import { PaginatedResponse, PaginationQuery } from 'src/types/pagination';
 import { CreateLanguageDto } from './dto/create-language.dto';
 import { LanguageResponse } from './dto/language.dto';
+import { UpdateLanguageDto } from './dto/update-language.dto';
 import { LanguageEntity } from './entities/language.entity';
 import { LanguageRepository } from './repositories/languages.repository';
 
@@ -79,5 +80,24 @@ export class LanguagesService {
         }
 
         return plainToInstance(LanguageResponse, language, { excludeExtraneousValues: true });
+    }
+
+    async updateV1(id: number, req: UpdateLanguageDto): Promise<LanguageResponse> {
+        const { name, isPublished } = req;
+        const language = await this.languagesRepository.findById(id);
+        if (!language) {
+            throw new NotFoundException('Language not found');
+        }
+
+        const existingLanguage = await this.languagesRepository.findByName(name);
+        if (existingLanguage && existingLanguage.id !== id) {
+            throw new ConflictException(`Language named "${name}" already exists`);
+        }
+
+        language.name = name;
+        language.isPublished = isPublished;
+
+        const updatedData = await this.languagesRepository.updateData(id, language);
+        return plainToInstance(LanguageResponse, updatedData, { excludeExtraneousValues: true });
     }
 }
