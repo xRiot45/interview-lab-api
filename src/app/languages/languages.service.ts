@@ -100,4 +100,13 @@ export class LanguagesService {
         const updatedData = await this.languagesRepository.updateData(id, language);
         return plainToInstance(LanguageResponse, updatedData, { excludeExtraneousValues: true });
     }
+
+    async deleteV1(id: number): Promise<void> {
+        const language = await this.languagesRepository.findById(id);
+        if (!language) {
+            throw new NotFoundException('Language not found');
+        }
+
+        return await this.languagesRepository.deleteData(id);
+    }
 }
