@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { InterviewSessionEntity } from 'src/app/interview_sessions/entities/interview_session.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('difficulty_levels')
 export class DifficultyLevelEntity {
@@ -31,6 +32,9 @@ export class DifficultyLevelEntity {
         onUpdate: 'CURRENT_TIMESTAMP(6)',
     })
     updatedAt: Date;
+
+    @OneToMany(() => InterviewSessionEntity, (interviewSession) => interviewSession.difficultyLevel)
+    interviewSessions: InterviewSessionEntity[];
 
     constructor(partial: Partial<DifficultyLevelEntity>) {
         Object.assign(this, partial);

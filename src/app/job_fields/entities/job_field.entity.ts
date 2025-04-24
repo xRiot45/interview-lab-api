@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { InterviewSessionEntity } from 'src/app/interview_sessions/entities/interview_session.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('job_fields')
 export class JobFieldEntity {
@@ -31,6 +32,9 @@ export class JobFieldEntity {
         onUpdate: 'CURRENT_TIMESTAMP(6)',
     })
     updatedAt: Date;
+
+    @OneToMany(() => InterviewSessionEntity, (interviewSession) => interviewSession.jobField)
+    interviewSessions: InterviewSessionEntity[];
 
     constructor(partial: Partial<JobFieldEntity>) {
         Object.assign(this, partial);

@@ -1,6 +1,15 @@
 import { Exclude, Expose } from '@nestjs/class-transformer';
+import { InterviewSessionEntity } from 'src/app/interview_sessions/entities/interview_session.entity';
 import { RoleEntity } from 'src/app/role/entities/role.entity';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class UserEntity {
@@ -50,6 +59,10 @@ export class UserEntity {
     @ManyToOne(() => RoleEntity, (role) => role.users)
     @Expose()
     role: RoleEntity;
+
+    @OneToMany(() => InterviewSessionEntity, (interviewSession) => interviewSession.user)
+    @Expose()
+    interviewSessions: InterviewSessionEntity[];
 
     @CreateDateColumn({
         type: 'timestamp',
