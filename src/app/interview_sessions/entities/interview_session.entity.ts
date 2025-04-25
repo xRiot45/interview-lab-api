@@ -41,6 +41,12 @@ export class InterviewSessionEntity {
     questionCount: number;
 
     @Column({
+        type: 'float',
+        nullable: true,
+    })
+    score: number;
+
+    @Column({
         type: 'datetime',
         default: () => 'CURRENT_TIMESTAMP',
     })
@@ -48,6 +54,7 @@ export class InterviewSessionEntity {
 
     @Column({
         type: 'datetime',
+        nullable: true,
     })
     finishedAt: Date;
 
