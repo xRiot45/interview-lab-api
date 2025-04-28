@@ -4,27 +4,50 @@ import { JobFieldEntity } from 'src/app/job_fields/entities/job_field.entity';
 import { LanguageEntity } from 'src/app/languages/entities/language.entity';
 import { UserEntity } from 'src/app/users/entities/user.entity';
 import { MethodInterviewEnum } from 'src/enums/method-interview.enum';
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity('interview_sessions')
 export class InterviewSessionEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => UserEntity, (user) => user.interviewSessions)
-    user: UserEntity;
+    @Column({
+        type: 'integer',
+        nullable: false,
+    })
+    userId: number;
 
-    @ManyToOne(() => LanguageEntity, (language) => language.interviewSessions)
-    language: LanguageEntity;
+    @Column({
+        type: 'integer',
+        nullable: false,
+    })
+    languageId: number;
 
-    @ManyToOne(() => JobFieldEntity, (jobField) => jobField.interviewSessions)
-    jobField: JobFieldEntity;
+    @Column({
+        type: 'integer',
+        nullable: false,
+    })
+    jobFieldId: number;
 
-    @ManyToOne(() => InterviewCategoryEntity, (interviewCategory) => interviewCategory.interviewSessions)
-    interviewCategory: InterviewCategoryEntity;
+    @Column({
+        type: 'integer',
+        nullable: false,
+    })
+    interviewCategoryId: number;
 
-    @ManyToOne(() => DifficultyLevelEntity, (difficultyLevel) => difficultyLevel.interviewSessions)
-    difficultyLevel: DifficultyLevelEntity;
+    @Column({
+        type: 'integer',
+        nullable: false,
+    })
+    difficultyLevelId: number;
 
     @Column({
         type: 'enum',
@@ -70,6 +93,26 @@ export class InterviewSessionEntity {
         onUpdate: 'CURRENT_TIMESTAMP(6)',
     })
     updatedAt: Date;
+
+    @ManyToOne(() => UserEntity, (user) => user.interviewSessions)
+    @JoinColumn({ name: 'userId' })
+    user: UserEntity;
+
+    @ManyToOne(() => LanguageEntity, (language) => language.interviewSessions)
+    @JoinColumn({ name: 'languageId' })
+    language: LanguageEntity;
+
+    @ManyToOne(() => JobFieldEntity, (jobField) => jobField.interviewSessions)
+    @JoinColumn({ name: 'jobFieldId' })
+    jobField: JobFieldEntity;
+
+    @ManyToOne(() => InterviewCategoryEntity, (interviewCategory) => interviewCategory.interviewSessions)
+    @JoinColumn({ name: 'interviewCategoryId' })
+    interviewCategory: InterviewCategoryEntity;
+
+    @ManyToOne(() => DifficultyLevelEntity, (difficultyLevel) => difficultyLevel.interviewSessions)
+    @JoinColumn({ name: 'difficultyLevelId' })
+    difficultyLevel: DifficultyLevelEntity;
 
     constructor(partial: Partial<InterviewSessionEntity>) {
         Object.assign(this, partial);

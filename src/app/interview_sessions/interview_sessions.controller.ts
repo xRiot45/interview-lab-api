@@ -1,4 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Version } from '@nestjs/common';
+import { GetUserId } from 'src/decorators/user.decorator';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { UserEntity } from '../users/entities/user.entity';
 import { CreateInterviewSessionDto } from './dto/create-interview_session.dto';
 import { InterviewSessionsService } from './interview_sessions.service';
 
@@ -7,7 +10,9 @@ export class InterviewSessionsController {
     constructor(private readonly interviewSessionsService: InterviewSessionsService) {}
 
     @Post()
-    create(@Body() createInterviewSessionDto: CreateInterviewSessionDto) {
-        return this.interviewSessionsService.create(createInterviewSessionDto);
+    @Version('1')
+    @UseGuards(JwtAuthGuard)
+    async createV1(@GetUserId() user: UserEntity, @Body() req: CreateInterviewSessionDto) {
+        return await this.interviewSessionsService.createV1(user.id, req);
     }
 }

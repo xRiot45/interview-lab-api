@@ -1,7 +1,7 @@
 import { InterviewSessionEntity } from 'src/app/interview_sessions/entities/interview_session.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity()
+@Entity('languages')
 export class LanguageEntity {
     @PrimaryGeneratedColumn('increment')
     id: number;
