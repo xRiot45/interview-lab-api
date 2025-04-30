@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Version } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Version } from '@nestjs/common';
 import { GetUserId } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UserEntity } from '../users/entities/user.entity';
@@ -14,5 +14,12 @@ export class InterviewSessionsController {
     @UseGuards(JwtAuthGuard)
     async createV1(@GetUserId() user: UserEntity, @Body() req: CreateInterviewSessionDto) {
         return await this.interviewSessionsService.createV1(user.id, req);
+    }
+
+    @Get()
+    @Version('1')
+    @UseGuards(JwtAuthGuard)
+    async findAll(@GetUserId() user: UserEntity) {
+        return await this.interviewSessionsService.findAll(user.id);
     }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateInterviewSessionDto } from './dto/create-interview_session.dto';
+import { InterviewSessionResponse } from './dto/interview_session.dto';
 import { InterviewSessionEntity } from './entities/interview_session.entity';
 import { InterviewSessionRepository } from './repositories/interview_session.repository';
 
@@ -20,5 +21,9 @@ export class InterviewSessionsService {
         });
 
         return await this.interviewSessionRepository.saveData(interviewSessionEntity);
+    }
+
+    async findAll(userId: number): Promise<InterviewSessionResponse[]> {
+        return await this.interviewSessionRepository.findAll(userId);
     }
 }

@@ -22,4 +22,11 @@ export class InterviewSessionRepository
 
         return result;
     }
+
+    async findAll(userId: number): Promise<InterviewSessionEntity[]> {
+        return await this.find({
+            where: { userId },
+            relations: ['user', 'language', 'jobField', 'interviewCategory', 'difficultyLevel'],
+        });
+    }
 }
