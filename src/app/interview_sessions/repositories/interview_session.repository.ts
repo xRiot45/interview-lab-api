@@ -13,7 +13,13 @@ export class InterviewSessionRepository
     constructor(@Inject(DataSource) dataSource: DataSource) {
         super(InterviewSessionEntity, dataSource);
     }
-    async saveData(interviewSession: InterviewSessionEntity): Promise<InterviewSessionEntity> {
-        return await this.save(interviewSession);
+    async saveData(interviewSession: InterviewSessionEntity): Promise<InterviewSessionEntity | null> {
+        const savedInterviewSession = await this.save(interviewSession);
+        const result = await this.findOne({
+            where: { id: savedInterviewSession.id },
+            relations: ['user', 'language', 'jobField', 'interviewCategory', 'difficultyLevel'],
+        });
+
+        return result;
     }
 }
