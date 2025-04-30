@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateInterviewSessionDto } from './dto/create-interview_session.dto';
 import { InterviewSessionResponse } from './dto/interview_session.dto';
 import { InterviewSessionEntity } from './entities/interview_session.entity';
@@ -25,5 +25,14 @@ export class InterviewSessionsService {
 
     async findAll(userId: number): Promise<InterviewSessionResponse[]> {
         return await this.interviewSessionRepository.findAll(userId);
+    }
+
+    async findByIdV1(userId: number, id: number): Promise<InterviewSessionResponse | null> {
+        const interviewSession = await this.interviewSessionRepository.findById(userId, id);
+        if (!interviewSession) {
+            throw new NotFoundException('Interview session not found');
+        }
+
+        return await this.interviewSessionRepository.findById(userId, id);
     }
 }

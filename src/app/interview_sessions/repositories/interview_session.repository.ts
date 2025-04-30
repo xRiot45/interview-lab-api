@@ -29,4 +29,14 @@ export class InterviewSessionRepository
             relations: ['user', 'language', 'jobField', 'interviewCategory', 'difficultyLevel'],
         });
     }
+
+    async findById(userId: number, id: number): Promise<InterviewSessionEntity | null> {
+        return await this.findOne({
+            where: {
+                id: id,
+                user: { id: userId },
+            },
+            relations: ['user', 'language', 'jobField', 'interviewCategory', 'difficultyLevel'],
+        });
+    }
 }

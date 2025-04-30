@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards, Version } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, Version } from '@nestjs/common';
 import { GetUserId } from 'src/decorators/user.decorator';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { UserEntity } from '../users/entities/user.entity';
@@ -21,5 +21,12 @@ export class InterviewSessionsController {
     @UseGuards(JwtAuthGuard)
     async findAll(@GetUserId() user: UserEntity) {
         return await this.interviewSessionsService.findAll(user.id);
+    }
+
+    @Get('/:id')
+    @Version('1')
+    @UseGuards(JwtAuthGuard)
+    async findByIdV1(@GetUserId() user: UserEntity, @Param('id') id: number) {
+        return await this.interviewSessionsService.findByIdV1(user.id, id);
     }
 }
