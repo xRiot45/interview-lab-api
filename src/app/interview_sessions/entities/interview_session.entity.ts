@@ -71,7 +71,7 @@ export class InterviewSessionEntity {
 
     @Column({
         type: 'datetime',
-        default: () => 'CURRENT_TIMESTAMP',
+        nullable: true,
     })
     startedAt: Date;
 
