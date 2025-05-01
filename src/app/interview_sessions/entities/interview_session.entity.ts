@@ -1,5 +1,6 @@
 import { DifficultyLevelEntity } from 'src/app/difficulty_levels/entities/difficulty_level.entity';
 import { InterviewCategoryEntity } from 'src/app/interview_categories/entities/interview_category.entity';
+import { InterviewQuestionEntity } from 'src/app/interview_questions/entities/interview_question.entity';
 import { JobFieldEntity } from 'src/app/job_fields/entities/job_field.entity';
 import { LanguageEntity } from 'src/app/languages/entities/language.entity';
 import { UserEntity } from 'src/app/users/entities/user.entity';
@@ -10,6 +11,7 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
@@ -113,6 +115,9 @@ export class InterviewSessionEntity {
     @ManyToOne(() => DifficultyLevelEntity, (difficultyLevel) => difficultyLevel.interviewSessions)
     @JoinColumn({ name: 'difficultyLevelId' })
     difficultyLevel: DifficultyLevelEntity;
+
+    @OneToMany(() => InterviewQuestionEntity, (interviewQuestion) => interviewQuestion.interviewSession)
+    interviewQuestions: InterviewQuestionEntity[];
 
     constructor(partial: Partial<InterviewSessionEntity>) {
         Object.assign(this, partial);
